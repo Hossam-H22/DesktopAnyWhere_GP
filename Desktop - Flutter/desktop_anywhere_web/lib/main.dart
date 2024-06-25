@@ -98,7 +98,7 @@ class _MyHomePageState extends State<MyHomePage> {
       });
 
       if (password == null) {
-        await Future.delayed(Duration(seconds: 1));
+        await Future.delayed(const Duration(seconds: 1));
         getPassword();
       }
     });
@@ -337,13 +337,32 @@ class _MyHomePageState extends State<MyHomePage> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text(
-                          'Password:  $password',
-                          style: const TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.w500,
-                            color: Colors.white,
-                          ),
+                        Row(
+                          children: [
+                            const Text(
+                              'Password:  ',
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.w500,
+                                color: Colors.white,
+                              ),
+                            ),
+                            (password!=null)? Text(
+                              password!,
+                              style: const TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.w500,
+                                color: Colors.white,
+                              ),
+                            ) : const Padding(
+                              padding: EdgeInsets.only(left: 8.0),
+                              child: SizedBox(
+                                height: 15,
+                                width: 15,
+                                child: CircularProgressIndicator(color: Colors.white,),
+                              ),
+                            ),
+                          ],
                         ),
                         const SizedBox(
                           width: 15,
