@@ -170,7 +170,7 @@ class kaggleAPI:
 class SupportModelFunctions:
     def __init__(self):
         path = Paths()
-        # path.get_all_paths()
+        path.get_all_paths()
         self.file_path = path.output_dir
         # self.file_path = "D:\\directories_files.txt"
 
@@ -1782,7 +1782,7 @@ def runDesktopGUI():
         subprocess.run("npm install -g nativefier", shell=True, text=True, capture_output=True)
         subprocess.run("nativefier \"https://desktopanywhere.onrender.com\" -n \"DesktopAnyWhere\"", shell=True,
                        text=True, capture_output=True)
-        print("\nCreate GUI App Successfully! \n")
+        print("\nGUI App Created Successfully! \n")
 
     # print(project_path)
     project_path += "\\DesktopAnyWhere.exe"
