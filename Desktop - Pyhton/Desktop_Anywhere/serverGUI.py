@@ -1776,9 +1776,18 @@ class Socket:
 def runDesktopGUI():
     script_path = os.path.abspath(__file__)  # Get the absolute path of the current Python script
     project_path = os.path.dirname(script_path)  # Get the directory containing the script
-    project_path += "\\desktop_anywhere_web-win32-x64\\desktop_anywhere_web.exe"
+    # project_path += "\\desktop_anywhere_web-win32-x64\\desktop_anywhere_web.exe"
+    project_path += "\\DesktopAnyWhere-win32-x64"
+    if not os.path.exists(project_path):
+        subprocess.run("npm install -g nativefier", shell=True, text=True, capture_output=True)
+        subprocess.run("nativefier \"https://desktopanywhere.onrender.com\" -n \"DesktopAnyWhere\"", shell=True,
+                       text=True, capture_output=True)
+        print("\nCreate GUI App Successfully! \n")
+
     # print(project_path)
+    project_path += "\\DesktopAnyWhere.exe"
     subprocess.Popen(f'"{project_path}"')
+
 
 
 
