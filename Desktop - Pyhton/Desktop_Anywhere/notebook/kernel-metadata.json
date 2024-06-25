@@ -1,0 +1,20 @@
+{
+  "id": "andrew2204/gp-models",
+  "id_no": 60004090,
+  "title": "GP_Models",
+  "code_file": "whispercolab.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": true,
+  "enable_gpu": true,
+  "enable_tpu": false,
+  "enable_internet": true,
+  "keywords": [],
+  "dataset_sources": [
+    "andrew2204/gp-voice-models",
+    "andrew2204/gp-voices"
+  ],
+  "kernel_sources": [],
+  "competition_sources": [],
+  "model_sources": []
+}

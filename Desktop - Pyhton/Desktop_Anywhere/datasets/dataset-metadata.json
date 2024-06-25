@@ -1,0 +1,39 @@
+{
+  "id": "andrew2204/gp-voices",
+  "id_no": 5218627,
+  "datasetSlugNullable": "gp-voices",
+  "ownerUserNullable": "andrew2204",
+  "usabilityRatingNullable": 0.375,
+  "titleNullable": "GP-Voices",
+  "subtitleNullable": "",
+  "descriptionNullable": "",
+  "datasetId": 5218627,
+  "datasetSlug": "gp-voices",
+  "hasDatasetSlug": true,
+  "ownerUser": "andrew2204",
+  "hasOwnerUser": true,
+  "usabilityRating": 0.375,
+  "hasUsabilityRating": true,
+  "totalViews": 2,
+  "totalVotes": 0,
+  "totalDownloads": 0,
+  "title": "GP-Voices",
+  "hasTitle": true,
+  "subtitle": "",
+  "hasSubtitle": true,
+  "description": "",
+  "hasDescription": true,
+  "isPrivate": true,
+  "keywords": [
+    "auto racing"
+  ],
+  "licenses": [
+    {
+      "nameNullable": "CC0-1.0",
+      "name": "CC0-1.0",
+      "hasName": true
+    }
+  ],
+  "collaborators": [],
+  "data": []
+}

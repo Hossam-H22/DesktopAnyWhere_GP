@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1095289543550",
+    "project_id": "desktopanywhere-7ea4c",
+    "storage_bucket": "desktopanywhere-7ea4c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1095289543550:android:511f66ad06f4f9d825712f",
+        "android_client_info": {
+          "package_name": "com.example.desktop_anywhere"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAVjZjh4_Bn6pyRzLKTO23Pw5HT8FqTQOQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
