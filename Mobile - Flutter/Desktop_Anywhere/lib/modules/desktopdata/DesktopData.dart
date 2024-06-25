@@ -139,45 +139,65 @@ class DesktopData extends StatelessWidget {
                         socket: cubit.socket,
                       ): VirtualTouchpadAndKeyboard(ip: ip,),
                     floatingActionButton: cubit.active_desktops[index]['view']=="Partitions"?
-                      FloatingActionButton(
-                      onPressed: () async {
-                        if(cubit.active_desktops[index]["recordLoading"]) return;
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          if(cubit.active_desktops[index]["isRecording"]) Padding(
+                            padding: const EdgeInsets.only(bottom: 5),
+                            child: FloatingActionButton(
+                              onPressed: () async {
+                                await cubit.stopRecording();
+                                print("Audio Canceled \n\n\n\n\n\n\n");
+                                cubit.toggleRecordState(index: index, state: false);
+                              },
+                              backgroundColor: Colors.black,
+                              child: const Icon(
+                                Icons.close,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                          FloatingActionButton(
+                          onPressed: () async {
+                            if(cubit.active_desktops[index]["recordLoading"]) return;
 
-                        if(cubit.active_desktops[index]["isRecording"]==false){
-                          cubit.toggleRecordState(index: index, state: true);
-                          cubit.recordVoice();
-                        }
-                        else {
-                          await cubit.stopRecording();
-                          File audioFile = File(cubit.filePath);
-                          List<int> audioBytes = audioFile.readAsBytesSync();
-                          print("Audio Finished \n\n\n\n\n\n\n");
-                          cubit.toggleRecordLoadingState(index: index, state: true);
-                          cubit.toggleRecordState(index: index, state: false);
+                            if(cubit.active_desktops[index]["isRecording"]==false){
+                              cubit.toggleRecordState(index: index, state: true);
+                              cubit.recordVoice();
+                            }
+                            else {
+                              await cubit.stopRecording();
+                              File audioFile = File(cubit.filePath);
+                              List<int> audioBytes = audioFile.readAsBytesSync();
+                              print("Audio Finished \n\n\n\n\n\n\n");
+                              cubit.toggleRecordLoadingState(index: index, state: true);
+                              cubit.toggleRecordState(index: index, state: false);
 
 
-                          cubit.emitSocketEvent(
-                            ip: ip,
-                            event: "voice",
-                            msg: audioBytes,
-                            event_error: "notFoundDevice",
-                            msg_error: "Voice not sent",
-                            skipWaiting: true,
-                          );
+                              cubit.emitSocketEvent(
+                                ip: ip,
+                                event: "voice",
+                                msg: audioBytes,
+                                event_error: "notFoundDevice",
+                                msg_error: "Voice not sent",
+                                skipWaiting: true,
+                              );
 
 
-                        }
-                      },
-                      backgroundColor: Colors.black,
-                      child: cubit.active_desktops[index]["recordLoading"]? LoadingAnimationWidget.threeRotatingDots(
-                        color: Colors.white,
-                        size: 25,
-                      ):
-                      Icon(
-                        cubit.active_desktops[index]["isRecording"] ? Icons.stop_circle_outlined : Icons.mic,
-                        color: Colors.white,
-                      ),
-                    ): const SizedBox(),
+                            }
+                          },
+                          backgroundColor: Colors.black,
+                          child: cubit.active_desktops[index]["recordLoading"]? LoadingAnimationWidget.threeRotatingDots(
+                            color: Colors.white,
+                            size: 25,
+                          ):
+                          Icon(
+                            cubit.active_desktops[index]["isRecording"] ? Icons.stop_circle_outlined : Icons.mic,
+                            color: Colors.white,
+                          ),
+                    ),
+                        ],
+                      ): const SizedBox(),
                     floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
                   );
                 },

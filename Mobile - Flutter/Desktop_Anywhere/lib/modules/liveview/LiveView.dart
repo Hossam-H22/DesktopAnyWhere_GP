@@ -222,42 +222,72 @@ class _LiveView5State extends State<LiveView> {
                         color: Colors.red[900],
                       ),
                     ),
-                    IconButton(
-                      onPressed: () async {
-                        if(cubit?.active_desktops[widget.index]["recordLoading"]) return;
+                    Padding(
+                      padding: const EdgeInsets.only(top: 2.0),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                            color: Colors.white, // border color
+                            width: 0.5, // border width
+                          ),
+                          borderRadius: BorderRadius.circular(15.0),
+                        ),
+                        child: Row(
+                          children: [
+                            IconButton(
+                              onPressed: () async {
+                                if(cubit?.active_desktops[widget.index]["recordLoading"]) return;
 
-                        if(cubit?.active_desktops[widget.index]["isRecording"]==false){
-                          cubit?.toggleRecordState(index: widget.index, state: true);
-                          cubit?.recordVoice();
-                        }
-                        else {
-                          await cubit?.stopRecording();
-                          File audioFile = File(cubit!.filePath);
-                          List<int> audioBytes = audioFile.readAsBytesSync();
-                          print("Audio Finished \n\n\n\n\n\n\n");
-                          cubit?.toggleRecordLoadingState(index: widget.index, state: true);
-                          cubit?.toggleRecordState(index: widget.index, state: false);
+                                if(cubit?.active_desktops[widget.index]["isRecording"]==false){
+                                  cubit?.toggleRecordState(index: widget.index, state: true);
+                                  cubit?.recordVoice();
+                                }
+                                else {
+                                  await cubit?.stopRecording();
+                                  File audioFile = File(cubit!.filePath);
+                                  List<int> audioBytes = audioFile.readAsBytesSync();
+                                  print("Audio Finished \n\n\n\n\n\n\n");
+                                  cubit?.toggleRecordLoadingState(index: widget.index, state: true);
+                                  cubit?.toggleRecordState(index: widget.index, state: false);
 
 
-                          cubit?.emitSocketEvent(
-                            ip: widget.ip,
-                            event: "voice",
-                            msg: audioBytes,
-                            event_error: "notFoundDevice",
-                            msg_error: "Voice not sent",
-                            skipWaiting: true,
-                          );
+                                  cubit?.emitSocketEvent(
+                                    ip: widget.ip,
+                                    event: "voice",
+                                    msg: audioBytes,
+                                    event_error: "notFoundDevice",
+                                    msg_error: "Voice not sent",
+                                    skipWaiting: true,
+                                  );
 
 
-                        }
-                      },
-                      icon: cubit?.active_desktops[widget.index]["recordLoading"]? LoadingAnimationWidget.threeRotatingDots(
-                        color: Colors.white,
-                        size: 25,
-                      ):
-                      Icon(
-                        cubit?.active_desktops[widget.index]["isRecording"] ? Icons.stop_circle_outlined : Icons.mic,
-                        color: Colors.white,
+                                }
+                              },
+                              icon: cubit?.active_desktops[widget.index]["recordLoading"]? LoadingAnimationWidget.threeRotatingDots(
+                                color: Colors.white,
+                                // size: 25,
+                                size: iconSize,
+                              ):
+                              Icon(
+                                cubit?.active_desktops[widget.index]["isRecording"] ? Icons.stop_circle_outlined : Icons.mic,
+                                color: Colors.white,
+                                size: iconSize,
+                              ),
+                            ),
+                            if(cubit?.active_desktops[widget.index]["isRecording"]) IconButton(
+                                onPressed: () async {
+                                  await cubit?.stopRecording();
+                                  print("Audio Canceled \n\n\n\n\n\n\n");
+                                  cubit?.toggleRecordState(index: widget.index, state: false);
+                                },
+                                icon: Icon(
+                                  Icons.close,
+                                  color: Colors.white,
+                                  size: iconSize,
+                                ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                     if (rotate) IconButton(
