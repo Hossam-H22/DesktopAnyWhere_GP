@@ -42,10 +42,6 @@ from threading import Thread
 import tkinter as tk
 
 
-
-
-
-
 def convert_seconds(number):
     seconds = int(number)
     fraction = number - seconds
@@ -170,9 +166,9 @@ class kaggleAPI:
 class SupportModelFunctions:
     def __init__(self):
         path = Paths()
-        path.get_all_paths()
-        self.file_path = path.output_dir
-        # self.file_path = "D:\\directories_files.txt"
+        # path.get_all_paths()
+        # self.file_path = path.output_dir
+        self.file_path = "D:\\directories_files.txt"
 
     def get_file_folder(self, name):
         # file_path = "D:\\directories_files.txt"
@@ -562,6 +558,8 @@ class Models:
             'وتلت': ':20',
             'ساعه': '1 hour',
             'ساعة': '1 hour',
+            'دقائق': ' min',
+            'ساعات': ' hour',
         }
         words = time.split()
         result = ''
@@ -1242,7 +1240,7 @@ class SupportScoketFunctions:
         pos = text.rfind(letter)
         if pos == -1:
             return text  # If the letter is not found, return the original string
-        return text[:pos], text[pos+1:]
+        return text[:pos], text[pos + 1:]
 
 
 class Socket:
@@ -1263,7 +1261,6 @@ class Socket:
         print("\n")
         self.refresh_srever()
         self.addDeviceToServer()
-
 
     def refresh_srever(self):
         try:
@@ -1297,8 +1294,8 @@ class Socket:
     def uploadFileToServer(self, mobile_Id, path):
         print("Start Uploaded")
         url = f"{self.url}/media"
-        data = { "mobile_Id": mobile_Id, }
-        file = { "file": open(path, 'rb'), }
+        data = {"mobile_Id": mobile_Id, }
+        file = {"file": open(path, 'rb'), }
         response = requests.post(url, files=file, data=data)
         if response.status_code == 200 or response.status_code == 201:
             print(f"File uploaded successfully!, {response.status_code} \n")
@@ -1716,7 +1713,8 @@ class Socket:
                     "isUploaded": isUploaded,
                     "message": msg,
                     "forMobile": data["forMobile"] if data.__contains__("forMobile") else False,
-                    "directoryPathInMobile": data["directoryPathInMobile"] if data.__contains__("directoryPathInMobile") else "",
+                    "directoryPathInMobile": data["directoryPathInMobile"] if data.__contains__(
+                        "directoryPathInMobile") else "",
                 },
                 "eventError": "error",  # error event if target not found
                 "messageError": "",
@@ -1772,7 +1770,6 @@ class Socket:
         # sio.disconnect()
 
 
-
 def runDesktopGUI():
     script_path = os.path.abspath(__file__)  # Get the absolute path of the current Python script
     project_path = os.path.dirname(script_path)  # Get the directory containing the script
@@ -1789,8 +1786,6 @@ def runDesktopGUI():
     subprocess.Popen(f'"{project_path}"')
 
 
-
-
 if __name__ == '__main__':
     soc = Socket()
     socket_process = multiprocessing.Process(target=soc.runSocket)
@@ -1801,7 +1796,6 @@ if __name__ == '__main__':
 
     socket_process.join()
     desktop_process.join()
-
 
     # get_all_paths()
     # model = Models()
