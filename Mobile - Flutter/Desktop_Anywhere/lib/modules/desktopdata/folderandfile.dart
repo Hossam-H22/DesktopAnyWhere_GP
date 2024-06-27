@@ -93,7 +93,6 @@ class FilesAndFolder extends StatelessWidget {
                 ),
                 onPressed: () {
                   _textFieldController.text = "";
-
                   showDialog(
                     context: context,
                     builder: (BuildContext context) => ConfirmationPopup(
@@ -118,11 +117,8 @@ class FilesAndFolder extends StatelessWidget {
                         {
                           return;
                         }
-
                         Navigator.pop(context);
-
-                        print("\n\n\n\n");
-                        print("Folder name: ${_textFieldController.text} \n\n\n\n\n\n");
+                        // print("Folder name: ${_textFieldController.text} \n\n\n");
 
                         cubit.showToast(
                             waitingMsg: true,
@@ -141,7 +137,6 @@ class FilesAndFolder extends StatelessWidget {
                           skipWaiting: true,
                         );
                       },
-
                     ),
                   );
                 },
@@ -223,7 +218,7 @@ class FilesAndFolder extends StatelessWidget {
                                                   IconButton(
                                                     icon: Icon(val.icon),
                                                     onPressed: () {
-                                                      print("${val.title} \n\n\n\n\n");
+                                                      // print("${val.title} \n\n\n");
 
                                                       String path = cubit.setpath(
                                                           foldername: dataList["dir"][index],
@@ -231,7 +226,7 @@ class FilesAndFolder extends StatelessWidget {
                                                           update: 0,
                                                           index: this.index
                                                       );
-                                                      print("path: ${path} \n\n\n\n");
+                                                      // print("path: ${path} \n\n\n");
 
                                                       if (val.title == "Delete") {
                                                         showDialog(
@@ -240,13 +235,11 @@ class FilesAndFolder extends StatelessWidget {
                                                               title: "Alert",
                                                               message: "Are you sure that you want to remove this Folder (${dataList["dir"][index].toString()})?",
                                                               functionOfAcceptanceButton: (){
-                                                                // print("\n\n\n Path : ${cubit.active_desktops[this.index]["path"]} \n\n\n\n\n");
                                                                 cubit.emitSocketEvent(
                                                                   ip: ip,
                                                                   event: "deleteFileOrFolder",
                                                                   msg: {
                                                                     "ip": ip,
-                                                                    // "path": path,
                                                                     "path": cubit.active_desktops[this.index]['path'].toString(),
                                                                     "deleted_name": dataList["dir"][index],
                                                                     "index": this.index,
@@ -258,11 +251,9 @@ class FilesAndFolder extends StatelessWidget {
                                                                     message: "Waiting for deleting"
                                                                 );
                                                                 Navigator.pop(context);
-
                                                               },
                                                             ),
                                                         );
-
                                                       }
                                                       else if(val.title == "Paste"){
                                                         cubit.pasteFile(
@@ -288,8 +279,7 @@ class FilesAndFolder extends StatelessWidget {
                                         color: Colors.white,
                                       ),
                                       onPressed: () async {
-                                        print(
-                                            'folder pressed : ${dataList["dir"][index]}');
+                                        // print('folder pressed : ${dataList["dir"][index]}');
 
                                         String target = cubit.setpath(
                                             foldername: dataList["dir"][index],
@@ -395,7 +385,7 @@ class FilesAndFolder extends StatelessWidget {
                                                   IconButton(
                                                     icon: Icon(val.icon),
                                                     onPressed: () async {
-                                                      print("${val.title} \n\n\n\n\n");
+                                                      // print("${val.title} \n\n\n");
 
                                                       String path = cubit.setpath(
                                                           foldername:dataList["files"][index],
@@ -403,7 +393,7 @@ class FilesAndFolder extends StatelessWidget {
                                                           update: 0,
                                                           index: this.index
                                                       );
-                                                      print("path: ${path} \n\n\n\n");
+                                                      // print("path: ${path} \n\n\n");
 
                                                       if (val.title == "Copy") {
                                                         cubit.showToast(
@@ -428,7 +418,7 @@ class FilesAndFolder extends StatelessWidget {
                                                             title: "Alert",
                                                             message: "Are you sure that you want to remove this file (${dataList["files"][index].toString()})?",
                                                             functionOfAcceptanceButton: (){
-                                                              print("\n\n\n Path : ${cubit.active_desktops[this.index]["path"]} \n\n\n\n\n");
+                                                              // print("\n\n\nPath : ${cubit.active_desktops[this.index]["path"]} \n\n\n");
                                                               cubit.emitSocketEvent(
                                                                 ip: ip,
                                                                 event: "deleteFileOrFolder",

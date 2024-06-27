@@ -30,6 +30,12 @@ class AppCubit extends Cubit<States> {
     init();
   }
 
+  static AppCubit get(context) => BlocProvider.of(context);
+  String serverUrl = "https://desktopanywhere.onrender.com";
+  // String path = '';
+
+
+  bool startApp = false;
   void init() async {
     await initSharedPreferences();
     await activateServer();
@@ -43,34 +49,93 @@ class AppCubit extends Cubit<States> {
   }
 
 
-  static AppCubit get(context) => BlocProvider.of(context);
-  late IO.Socket socket;
 
 
-  late Database database;
-  List<Map> desktops = [];
 
-  final record = AudioRecorder();
-  final justAudio = AudioPlayer();
-  CrossFadeState recordFadeState = CrossFadeState.showFirst;
-  late String filePath;
 
-  bool isUppercase = false;
-  bool isArabic = true;
-  bool isNum = false;
-  bool isNum2 = false;
-  bool isRecording = false;
-  bool isPassword = true;
-  String path = '';
-  String serverUrl = "https://desktopanywhere.onrender.com";
-  bool pairLoading = false;
+
+
+
+  List<Choice> listOfChoiceFolders = <Choice>[
+    const Choice(title: "Delete", icon: Icons.delete_sweep_outlined),
+    // Choice(title: "Paste", icon: Icons.paste),
+  ];
   bool isCopy = false;
+  void toggleCopyBool({forMobile = false}) {
+    if(!forMobile){
+      isCopy = !isCopy;
+    }
 
-  String deviceName="";
-  String deviceId="";
+    if(isCopy){
+      listOfChoiceFolders.add(const Choice(title: "Paste", icon: Icons.paste));
+    }
+    else{
+      if(listOfChoiceFolders.last.title=="Paste"){
+        listOfChoiceFolders.removeLast();
+      }
+
+    }
+    emit(ToggleCopyBoolState());
+  }
+
+
+  bool laoding = true;
+  void stopLoading(){
+    laoding=false;
+    emit(StopLoadingState());
+  }
+
+  String getCurrentTime() {
+    DateTime currentTime = DateTime.now();
+
+    // Format and display the current time as a string
+    String formattedTime =
+        '${currentTime.year}/${currentTime.month}/${currentTime.day} ${currentTime.hour}:${currentTime.minute}';
+
+    return formattedTime;
+  }
+
+  Future<void> delay({var sec = 2}) async {
+    print('Start Delay, $sec sec');
+    await Future.delayed(Duration(seconds: sec)); // Delay for 2 seconds
+    print('End Delay');
+  }
+
+  void showToast({flag = true, message = "test", waitingMsg = false}) {
+    // print("showToast \n\n\n\n\n");
+    Fluttertoast.showToast(
+      msg: message,
+      toastLength: Toast.LENGTH_SHORT,
+      // toastLength: Toast.LENGTH_LONG,
+      backgroundColor: Colors.grey,
+      textColor: waitingMsg? Colors.black54: flag ? Colors.green[800] : Colors.red[900],
+      gravity: ToastGravity.BOTTOM,
+      fontSize: 18,
+    );
+  }
+
+  Future<String> pickDirectory() async {
+    String? selectedDirectory = await FilePicker.platform.getDirectoryPath();
+    selectedDirectory ??= "";
+    return selectedDirectory;
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+  // Mobile Information Region
   String version_number="";
-  static final DeviceInfoPlugin deviceInfoPlugin = DeviceInfoPlugin();
   String deviceModel="";
+  static final DeviceInfoPlugin deviceInfoPlugin = DeviceInfoPlugin();
   Future<void> initPlatformState() async {
     try {
       if (kIsWeb) {
@@ -99,47 +164,10 @@ class AppCubit extends Cubit<States> {
       deviceModel = "Unknown Device";
     }
 
-    print("mobile Name: $deviceModel \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
-  }
-  bool startApp = false;
-
-
-  final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
-  late final SharedPreferences savedValues;
-  Future<void> initSharedPreferences() async {
-    print("initSharedPreferences  \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
-    savedValues = await _prefs;
-
-    String? model = savedValues.getString("deviceModel");
-    if(model==null){
-      await initPlatformState();
-      savedValues.setString("deviceModel", deviceModel);
-    }
-    else {
-      print("model: $model  \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
-      deviceModel = model;
-    }
-
-
-    String? name = savedValues.getString("deviceName");
-    if(name!=null){
-      print("name: $name  \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
-      deviceName = name;
-
-      String? device_Id = savedValues.getString("deviceId");
-      if(device_Id == null){
-
-        // call request
-        savedValues.setString("deviceId", deviceId);
-      }
-      else {
-        deviceId = device_Id;
-      }
-    }
-
-    emit(SharedPreferencesState());
+    // print("mobile Name: $deviceModel \n\n\n");
   }
 
+  String deviceName="";
   Future<void> updateDeviceName(name) async {
     deviceName = name;
     savedValues.setString("deviceName", deviceName);
@@ -147,60 +175,128 @@ class AppCubit extends Cubit<States> {
     emit(UpdateDeviceNameState());
   }
 
-  void toggleUppercase() {
-    isUppercase = !isUppercase;
-    emit(ToggleUppercaseState());
+  final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+  late final SharedPreferences savedValues;
+  Future<void> initSharedPreferences() async {
+    // print("initSharedPreferences  \n\n\n");
+    savedValues = await _prefs;
+
+    String? model = savedValues.getString("deviceModel");
+    String? versionNumber = savedValues.getString("versionNumber");
+
+    if(model==null){
+      await initPlatformState();
+      savedValues.setString("deviceModel", deviceModel);
+      savedValues.setString("versionNumber", version_number);
+    }
+    else {
+      // print("model: $model  \n\n\n");
+      deviceModel = model;
+      version_number = versionNumber!;
+    }
+
+
+    String? name = savedValues.getString("deviceName");
+    if(name!=null){
+      // print("name: $name  \n\n\n");
+      deviceName = name;
+
+      String? deviceId = savedValues.getString("deviceId");
+      if(deviceId == null){
+        savedValues.setString("deviceId", deviceId!);
+      }
+      else {
+        deviceId = deviceId;
+      }
+    }
+
+    emit(SharedPreferencesState());
+  }
+  // End Mobile Information Region
+
+
+
+
+
+
+  // Pair Device Region
+  String new_ip = "", new_name = "", new_password = "";
+  late BuildContext context;
+  void updateInputData({ip = "", name = "", password = "", context = null, emitCubit=true}) {
+    this.new_ip = ip;
+    this.new_name = name;
+    this.new_password = password;
+    if (context != null) {
+      this.context = context;
+    }
+
+    if(emitCubit){
+      emit(UpdateTemporaryData());
+    }
+
   }
 
-  void toggleArabic() {
-    isArabic = !isArabic;
-    emit(ToggleArabicState());
-  }
-
-  void toggleNum() {
-    isNum = !isNum;
-    emit(ToggleNumState());
-  }
-
-  void toggleNum2() {
-    isNum2 = !isNum2;
-    emit(ToggleNum2State());
-  }
-
+  bool pairLoading = false;
   void togglePairLoading({state}) {
     pairLoading = state ?? !pairLoading;
     emit(TogglePairLoadingState());
+  }
+
+  bool isPassword = true;
+  void togglePassword() {
+    isPassword = !isPassword;
+    emit(TogglePasswordState());
   }
 
   void toggleConnectDeviceLoading({index, state}) {
     desktops[index]["loading"] = state ;
     emit(ToggleConnectDeviceLoadingState());
   }
+  // End Pair Device Region
 
-  List<Choice> listOfChoiceFolders = <Choice>[
-    const Choice(title: "Delete", icon: Icons.delete_sweep_outlined),
-    // Choice(title: "Paste", icon: Icons.paste),
-  ];
-  void toggleCopyBool({forMobile = false}) {
-    if(!forMobile){
-      isCopy = !isCopy;
-    }
 
-    if(isCopy){
-      listOfChoiceFolders.add(const Choice(title: "Paste", icon: Icons.paste));
-    }
-    else{
-      if(listOfChoiceFolders.last.title=="Paste"){
-        listOfChoiceFolders.removeLast();
-      }
 
-    }
-    emit(ToggleCopyBoolState());
+
+
+
+  // Keyboard Region
+  bool isUppercase = false;
+  void toggleUppercase() {
+    isUppercase = !isUppercase;
+    emit(ToggleUppercaseState());
   }
+
+  bool isArabic = true;
+  void toggleArabic() {
+    isArabic = !isArabic;
+    emit(ToggleArabicState());
+  }
+
+  bool isNum = false;
+  void toggleNum() {
+    isNum = !isNum;
+    emit(ToggleNumState());
+  }
+
+  bool isNum2 = false;
+  void toggleNum2() {
+    isNum2 = !isNum2;
+    emit(ToggleNum2State());
+  }
+  // End Keyboard Region
+
+
+
 
 
 
   // Voise Region
+  final record = AudioRecorder();
+  final justAudio = AudioPlayer();
+  // bool isRecording = false;
+  CrossFadeState recordFadeState = CrossFadeState.showFirst;
+  late String filePath;
+
   void toggleRecordState({required index, required state}) {
     active_desktops[index]["isRecording"] = state;
     emit(ToggleRecordingState());
@@ -251,22 +347,15 @@ class AppCubit extends Cubit<States> {
   }
   // End Voice Region
 
-  String getCurrentTime() {
-    DateTime currentTime = DateTime.now();
-
-    // Format and display the current time as a string
-    String formattedTime =
-        '${currentTime.year}/${currentTime.month}/${currentTime.day} ${currentTime.hour}:${currentTime.minute}';
-
-    return formattedTime;
-  }
 
 
-  void togglePassword() {
-    isPassword = !isPassword;
-    emit(TogglePasswordState());
-  }
 
+
+
+
+  // Database Region
+  late Database database;
+  List<Map> desktops = [];
 
   void createDatabase() async {
     openDatabase(
@@ -308,6 +397,22 @@ class AppCubit extends Cubit<States> {
     });
   }
 
+  void getDataFromDatabase(database) async {
+    List<Map> newDesktops = [];
+    emit(GetDatabaseLoadingState());
+    database.rawQuery('SELECT * FROM Desktop').then((value) {
+      value.forEach((element) {
+        newDesktops.add({
+          ...element,
+          "loading": false,
+        });
+      });
+      desktops = newDesktops;
+      emit(GetDatabaseState());
+    });
+    // printTableData(database);
+  }
+
   void insertToDatabase({
     required String name,
     required String password,
@@ -336,22 +441,6 @@ class AppCubit extends Cubit<States> {
           }).catchError((error) => print(
                   'Error When Inserting New Record ${error.toString()}')));
     }
-  }
-
-  void getDataFromDatabase(database) async {
-    List<Map> newDesktops = [];
-    emit(GetDatabaseLoadingState());
-    database.rawQuery('SELECT * FROM Desktop').then((value) {
-      value.forEach((element) {
-        newDesktops.add({
-          ...element,
-          "loading": false,
-        });
-      });
-      desktops = newDesktops;
-      emit(GetDatabaseState());
-    });
-    printTableData(database);
   }
 
   void updateIpData({
@@ -385,6 +474,20 @@ class AppCubit extends Cubit<States> {
       getDataFromDatabase(database);
       emit(UpdateDatabaseState());
     });
+  }
+
+  Future<bool> doesMacExists({
+    required String macAddress,
+  }) async {
+    // Execute query to check if MAC address exists
+    List<Map<String, dynamic>> result = await database.query(
+      'Desktop',
+      columns: ['mac'],
+      where: 'mac = ?',
+      whereArgs: [macAddress],
+    );
+
+    return result.isNotEmpty;
   }
 
   void deleteData({
@@ -427,65 +530,15 @@ class AppCubit extends Cubit<States> {
       print('Error when dropping table: $error');
     }
   }
-
-  Future<bool> doesMacExists({
-    required String macAddress,
-  }) async {
-    // Execute query to check if MAC address exists
-    List<Map<String, dynamic>> result = await database.query(
-      'Desktop',
-      columns: ['mac'],
-      where: 'mac = ?',
-      whereArgs: [macAddress],
-    );
-
-    return result.isNotEmpty;
-  }
-
-
-  //Future<List<Map<String, dynamic>>>
-  Future<void> autoConnection() async {
-    if(desktops.length==0){
-      laoding=false;
-      return;
-    }
-
-    var macList = [];
-    desktops.forEach((device) => macList.add(device["mac"]));
-    final ready_devices = await getNewIps(macList);
-    for(int i=0; i<ready_devices.length; i++){
-      if(ready_devices[i]["authorized"]==false){
-        deleteActiveDevice(ready_devices[i]["public_ip"]);
-        deleteData(mac: ready_devices[i]["mac_address"]);
-        continue;
-      }
-
-      if(desktops[i]["ip"]!=ready_devices[i]["public_ip"] || desktops[i]["online"]!=ready_devices[i]["availabile"]){
-        updateIpData(
-          ip: ready_devices[i]["public_ip"],
-          mac: ready_devices[i]["mac_address"],
-          online: ready_devices[i]["available"],
-          getDataFlag: false,
-        );
-      }
-
-      if(ready_devices[i]["available"]==0) {
-        deleteActiveDevice(ready_devices[i]["public_ip"]);
-      }
-    }
-    getDataFromDatabase(database);
-    laoding = false;
-  }
-
-
-  Future<void> delay({var sec = 2}) async {
-    print('Start Delay, $sec sec');
-    await Future.delayed(Duration(seconds: sec)); // Delay for 2 seconds
-    print('End Delay');
-  }
+  // End Database Region
 
 
 
+
+
+
+
+  // Active Desktops Region
   List<Map> active_desktops = [
     {
       "name": "Desktop Anywhere",
@@ -501,9 +554,6 @@ class AppCubit extends Cubit<States> {
       "isRecording": false,
     },
   ];
-
-  late Map<String, dynamic> configuration;
-
   int addActiveDevice(ip, name, listofpartitions) {
     var index;
     bool found = false;
@@ -529,16 +579,12 @@ class AppCubit extends Cubit<States> {
         "isRecording": false,
       });
       index = active_desktops.length - 1;
-      // print(active_desktops);
-
       updateAccessTimeData(
         ip: ip,
         accessTime: getCurrentTime(),
       );
-
       emit(AddActiveDesktopList());
     }
-
     return index;
   }
 
@@ -562,11 +608,10 @@ class AppCubit extends Cubit<States> {
       active_desktops[index]["loading"] = status;
     }
 
-    print("${active_desktops[index]["loading"]} \n\n\n\n\n\n\n\n\n");
-    emit(updateActiveDeviceLoadingStatus());
+    // print("${active_desktops[index]["loading"]} \n\n\n");
+    emit(UpdateActiveDeviceLoadingStatus());
   }
 
-  //send index
   String setpath({foldername, flag, index, update = 1}) {
     // var index=0;
     // for(var i=1; i<active_desktops.length; i++){
@@ -580,27 +625,26 @@ class AppCubit extends Cubit<States> {
       return "";
     }
 
-    String new_path = active_desktops[index]["path"];
+    String newPath = active_desktops[index]["path"];
 
     if (flag == 1) {
-      new_path = foldername;
+      newPath = foldername;
     } else {
       String path = active_desktops[index]["path"];
       if (path[path.length - 1] != '\\') {
-        new_path = path + '\\' + foldername;
+        newPath = path + '\\' + foldername;
       } else {
-        new_path = path + foldername;
+        newPath = path + foldername;
       }
     }
 
     if (update == 1) {
-      active_desktops[index]["path"] = new_path;
+      active_desktops[index]["path"] = newPath;
       emit(PushPageState());
     }
-    return new_path;
+    return newPath;
   }
 
-  //send index
   void updatepath(index) {
     String path = active_desktops[index]["path"];
     int lastSlashIndex = path.lastIndexOf('\\');
@@ -620,17 +664,17 @@ class AppCubit extends Cubit<States> {
   void changeViewMode(index, mode) {
     // mode => "Partitions" or "Share Screen" or "Virtual Control"
     active_desktops[index]["view"] = mode;
-    emit(changeDesktopViewMode());
+    emit(ChangeDesktopViewMode());
   }
 
   void updateRoomId(index, roomId) {
     active_desktops[index]["roomId"] = roomId;
-    emit(updateRoomID());
+    emit(UpdateRoomIDState());
   }
 
   void updateRotate(index) {
     active_desktops[index]["rotate"] = !active_desktops[index]["rotate"];
-    emit(updateRotateStatues());
+    emit(UpdateRotateStatues());
   }
 
   void updateSizeFactor(index, sizeFactor) {
@@ -638,18 +682,19 @@ class AppCubit extends Cubit<States> {
     if (active_desktops[index]["sizeFactor"] < 0.2) {
       active_desktops[index]["sizeFactor"] = 0.2;
     }
-    print("sizeFactor \n\n\n\n\n");
-    emit(updateSizeFactorView());
+    // print("sizeFactor \n\n");
+    emit(UpdateSizeFactorView());
   }
 
-  Map get_active_desktop_data(ip) {
-    var desktop;
-    for (var i = 1; i < active_desktops.length; i++) {
-      if (active_desktops[i]["ip"] == ip) {
-        desktop = active_desktops[i];
-      }
-    }
-    return desktop;
+  Map? get_active_desktop_data(ip) {
+    int index = get_active_desktop_index(ip);
+    return index==-1? null : active_desktops[index];
+  }
+
+  void updateImageShared(ip, image) {
+    var index = get_active_desktop_index(ip);
+    active_desktops[index]['image'] = image;
+    emit(UpdateImageShareScreen());
   }
 
   int get_active_desktop_index(ip) {
@@ -657,24 +702,207 @@ class AppCubit extends Cubit<States> {
     for (var i = 1; i < active_desktops.length; i++) {
       if (active_desktops[i]["ip"] == ip) {
         index = i;
+        break;
       }
     }
     return index;
   }
+  // End Active Desktops Region
 
-  void updateImageShared(ip, image) {
-    var index = 0;
-    for (var i = 1; i < active_desktops.length; i++) {
-      if (active_desktops[i]["ip"] == ip) {
-        index = i;
-        break;
-      }
+
+
+
+
+
+
+  // Server Region
+  Future<void> activateServer() async {
+    final response = await http.get(
+      Uri.parse('$serverUrl/welcome'),
+      // Uri.parse('http://localhost:5000/welcome'),
+    );
+
+    if (response.statusCode == 200) {
+      var ms = json.decode(response.body);
+      // print("\n\n\n ${ms} \n\n\n\n");
+    } else {
+      print("Trying to activate server ....");
+      delay(sec: 2);
+      activateServer();
     }
-
-    active_desktops[index]['image'] = image;
-    emit(updateImageShareScreen());
   }
 
+  late Map<String, dynamic> configuration;
+  Future<void> getConfigurations() async {
+    final response = await http.get(
+      Uri.parse('$serverUrl/confegration'),
+    );
+
+    if (response.statusCode == 200) {
+      configuration = json.decode(response.body)["configuration"];
+      // print("\n\n\n ${configuration} \n\n\n\n");
+    } else {
+      delay(sec: 1);
+      getConfigurations();
+    }
+  }
+
+  String deviceId="";
+  Future<void> addDeviceToServer() async {
+    final headers = {'Content-Type': 'application/json'};
+    String jsonData = jsonEncode({
+      "name": deviceName,
+      "model": deviceModel,
+      "version_number": version_number,
+    });
+    final response = await http.post(
+        Uri.parse('$serverUrl/mobile'),
+        headers: headers,
+        body: jsonData
+    );
+
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      deviceId = json.decode(response.body)["mobile"]["_id"];
+      savedValues.setString("deviceId", deviceId);
+      // print("device Id: ${deviceId} \n\n\n\n");
+    } else {
+      delay(sec: 1);
+      addDeviceToServer();
+    }
+  }
+
+  Future<String> createConnectionOnServer(desktopMac) async {
+    final headers = {'Content-Type': 'application/json'};
+    String jsonData = jsonEncode({
+      "desktop_mac": desktopMac,
+      "mobile_id": deviceId,
+    });
+    final response = await http.post(
+        Uri.parse('$serverUrl/connection'),
+        headers: headers,
+        body: jsonData
+    );
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      var res = json.decode(response.body);
+      return res["connection"]["_id"];
+    } else {
+      delay(sec: 1);
+      return createConnectionOnServer(desktopMac);
+    }
+  }
+
+  Future<void> deleteConnection(connectionId) async {
+    final response = await http.delete(
+      Uri.parse('$serverUrl/connection/$connectionId'),
+    );
+
+    if (response.statusCode == 200) {
+      var msg = json.decode(response.body);
+      // print("\n\n\n ${msg} \n\n\n\n");
+    }else {
+      var msg = json.decode(response.body);
+      // print("\n\n\n ${msg} \n\n\n\n");
+    }
+
+  }
+
+  Future<void> autoConnection() async {
+    if(desktops.isEmpty){
+      laoding=false;
+      return;
+    }
+    var macList = [];
+    for (var device in desktops) {
+      macList.add(device["mac"]);
+    }
+    final readyDevices = await getNewIps(macList);
+    for(int i=0; i<readyDevices.length; i++){
+      if(readyDevices[i]["authorized"]==false){
+        deleteActiveDevice(readyDevices[i]["public_ip"]);
+        deleteData(mac: readyDevices[i]["mac_address"]);
+        continue;
+      }
+      if(desktops[i]["ip"]!=readyDevices[i]["public_ip"]
+          || desktops[i]["online"]!=readyDevices[i]["availabile"]){
+        updateIpData(
+          ip: readyDevices[i]["public_ip"],
+          mac: readyDevices[i]["mac_address"],
+          online: readyDevices[i]["available"],
+          getDataFlag: false,
+        );
+      }
+
+      if(readyDevices[i]["available"]==0) {
+        deleteActiveDevice(readyDevices[i]["public_ip"]);
+      }
+    }
+    getDataFromDatabase(database);
+    laoding = false;
+  }
+
+  Future<List<dynamic>> getNewIps(macList) async {
+    final headers = {'Content-Type': 'application/json'};
+    String jsonData = jsonEncode({
+      "mac": macList,
+    });
+    final response = await http.post(
+        Uri.parse('$serverUrl/desktop/information/$deviceId'),
+        headers: headers,
+        body: jsonData
+    );
+
+    if (response.statusCode == 200) {
+      var readyDevices = json.decode(response.body)["ready_devices"];
+      return readyDevices;
+    } else {
+      delay(sec: 1);
+      return getNewIps(macList);
+    }
+  }
+
+  Future<void> downloadFile(String directoryPath) async {
+    // String directoryPath = "storage/emulated/0/Download/TestDesktop";
+    // print("Path: $directoryPath \n\n\n");
+
+    var time = DateTime.now().microsecondsSinceEpoch;
+
+    final response = await http.get(
+      Uri.parse('$serverUrl/media/view/$deviceId'),
+    );
+
+    if (response.statusCode == 200) {
+      var res = json.decode(response.body);
+      // print("\n\n\n ${res} \n\n\n\n");
+      res = res["file"];
+      directoryPath = "$directoryPath/${res["file_name"]}__$time";
+      // directoryPath = "$directoryPath/${res["file_name"]}";
+      var file = File(directoryPath);
+
+      var fileResponse = await http.get(
+        Uri.parse('$serverUrl/${res["secure_url"]}'),
+      );
+
+      if(fileResponse.statusCode == 200){
+        await file.writeAsBytes(fileResponse.bodyBytes);
+        showToast(flag: true, message: "File downloaded successfully");
+        // OpenFile.open(directoryPath);
+      } else{
+        showToast(flag: false, message: "Failed download file");
+      }
+
+    } else {
+      showToast(flag: false, message: "Failed download file");
+    }
+  }
+  // End Server Region
+
+
+
+
+
+
+  // Socket Region
+  late IO.Socket socket;
   void connectOnSocketServer() {
     socket = IO.io(
       serverUrl,
@@ -682,11 +910,7 @@ class AppCubit extends Cubit<States> {
       IO.OptionBuilder().setTransports(['websocket']).build(),
     );
     socket.onConnect((_) {
-      print("\n\n");
-      print('connect');
-      print(socket.id);
-      print("\n\n\n\n\n\n\n\n\n\n\n");
-
+      print('connect to socket with ID: ${socket.id} \n\n');
       // socket.emit('addDevice', {
       //   // "id": socket.id,
       //   "ip": "192.168.1.9",
@@ -700,35 +924,6 @@ class AppCubit extends Cubit<States> {
     });
   }
 
-  void showToast({flag = true, message = "test", waitingMsg = false}) {
-    print("showToast \n\n\n\n\n");
-    Fluttertoast.showToast(
-      msg: message,
-      toastLength: Toast.LENGTH_SHORT,
-      // toastLength: Toast.LENGTH_LONG,
-      backgroundColor: Colors.grey,
-      textColor: waitingMsg? Colors.black54: flag ? Colors.green[800] : Colors.red[900],
-      gravity: ToastGravity.BOTTOM,
-      fontSize: 18,
-    );
-  }
-
-  String new_ip = "", new_name = "", new_password = "";
-  late BuildContext context;
-  void updateInputData({ip = "", name = "", password = "", context = null, emitCubit=true}) {
-    this.new_ip = ip;
-    this.new_name = name;
-    this.new_password = password;
-    if (context != null) {
-      this.context = context;
-    }
-
-    if(emitCubit){
-      emit(updateTemporaryData());
-    }
-
-  }
-
   bool sendR = true;
   void socketListener() {
     // socket.emit('addDevice', {
@@ -737,20 +932,14 @@ class AppCubit extends Cubit<States> {
     // });
 
     socket.on('partition', (data) async {
-      print("${data} \n\n\n");
       if (data["part"] == "main") {
         toggleConnectDeviceLoading(index: data["index"], state: false);
         addActiveDevice(data["ip"], data["deviceName"], data["partitions"]);
       }
       else {
-
-
-
-
         if(data["update"] == null) {
           data["update"] = 1;
         }
-
         setpath(
             foldername: data["componentName"],
             flag: data["path_flag"],
@@ -759,15 +948,12 @@ class AppCubit extends Cubit<States> {
         );
 
         if(data["popScreen"] != null){
-          print("\n\n\n\n\n\n  pop Screen is Done \n\n\n\n\n");
           Navigator.pop(context);
-          await delay(sec: 2);
         }
 
-
-        if(data["update"]==1) updateActiveDeviceLoading(index: data["index"]);
-
-
+        if(data["update"]==1){
+          updateActiveDeviceLoading(index: data["index"]);
+        }
 
         Navigator.push(
           context,
@@ -784,30 +970,25 @@ class AppCubit extends Cubit<States> {
       }
 
       sendR = true;
-      emit(updateSocketEmitState());
+      emit(UpdateSocketEmitState());
     });
 
     socket.on("checkIPResult", (data) {
       sendR = true;
-      emit(updateSocketEmitState());
-
+      emit(UpdateSocketEmitState());
       if (data["found"] == true) {
         if (data["note"] == "add device") {
           socket.emit('addDevice', {"ip": new_ip, "type": "mobile"});
         }
-
         emitSocketEvent(ip: new_ip, event: "checkPassword", msg: {
           "password": new_password,
         });
       } else {
-        // Navigator.of(context).pop();
         showToast(flag: data["found"], message: data["message"]);
       }
     });
 
     socket.on("password", (data) async {
-
-
       if (data["valid"]) {
         String connectionId = await createConnectionOnServer(data["mac"]);
         insertToDatabase(
@@ -817,24 +998,17 @@ class AppCubit extends Cubit<States> {
           mac: data["mac"],
           connectionId: connectionId,
         );
-
-
         togglePairLoading(state: false);
         Navigator.of(context).pop();
       }
-
-
-      // Navigator.of(context).pop();
       showToast(flag: data["valid"], message: data["message"]);
       togglePairLoading(state: false);
-
-
       sendR = true;
-      emit(updateSocketEmitState());
+      emit(UpdateSocketEmitState());
     });
 
     socket.on("refreshConnection", (data) async {
-      print("refreshConnection event \n\n\n\n\n\n\n\n");
+      // print("refreshConnection event \n\n\n\n\n\n\n\n");
       await autoConnection();
     });
 
@@ -843,11 +1017,11 @@ class AppCubit extends Cubit<States> {
       if(index>=0){
         toggleRecordLoadingState(index: index, state: false);
       }
-      showToast(flag: data["flag"], message: data["message"]);
+      showToast(flag: data["flag"], message: data["message"], waitingMsg: data["waitingMsg"]??false);
     });
 
     socket.on("downloadResults", (data){
-      print("\n\n\n\n\n\n $data  \n\n\n\n\n\n\n");
+      // print("\n\n\n\n\n\n $data  \n\n\n\n\n\n\n");
       showToast(flag: data["isDownloaded"], message: data["message"]);
 
       if(data["isDownloaded"]){
@@ -856,8 +1030,7 @@ class AppCubit extends Cubit<States> {
     });
 
     socket.on("uploadResults", (data) async {
-      print("\n\n\n\n\n\n Data: $data  \n\n\n\n\n\n\n");
-      // showToast(flag: data["isUploaded"], message: data["message"]);
+      // print("\n\n\n\n\n\n Data: $data  \n\n\n\n\n\n\n");
 
       if(data["forMobile"] == null){
         data["forMobile"] = false;
@@ -865,8 +1038,6 @@ class AppCubit extends Cubit<States> {
       if(data["isUploaded"]){
         toggleCopyBool(forMobile: data["forMobile"]);
       }
-
-
       if(data["forMobile"]){
         await downloadFile(data["directoryPathInMobile"]);
       }
@@ -876,23 +1047,18 @@ class AppCubit extends Cubit<States> {
     });
 
     socket.on("deleteResults", (data){
-      print("\n\n\n\n\n\n $data  \n\n\n\n\n\n\n");
+      // print("\n\n\n\n\n\n $data  \n\n\n\n\n\n\n");
       showToast(flag: data["isDeleted"], message: data["message"]);
-      // if(data["isDeleted"]){
-      //   updatepath(data["index"]);
-      //   Navigator.pop(context);
-      // }
-      // Navigator.pop(context);
     });
 
     socket.on("createFolderResults", (data){
-      print("\n\n\n\n\n\n $data  \n\n\n\n\n\n\n");
+      // print("\n\n\n\n\n\n $data  \n\n\n\n\n\n\n");
       showToast(flag: data["isCreated"], message: data["message"]);
       // Navigator.pop(context);
     });
 
     socket.on("notFoundDevice", (data) {
-      print("Not Found Device \n\n\n\n\n\n");
+      // print("Not Found Device \n\n\n\n\n\n");
       String ms = data["messageError"].toString().isNotEmpty ? data["messageError"] : "Not Found Device";
       sendR = true;
       int index = get_active_desktop_index(data["ip"]);
@@ -910,28 +1076,9 @@ class AppCubit extends Cubit<States> {
         toggleConnectDeviceLoading(index: data["lostData"]["index"], state: false);
       }
 
-      emit(updateSocketEmitState());
+      emit(UpdateSocketEmitState());
       showToast(flag: false, message: ms);
     });
-  }
-
-  void pasteFile({ip, index, path=""}){
-    showToast(
-        waitingMsg: true,
-        message: "Waiting for paste"
-    );
-
-    emitSocketEvent(
-      ip: ip,
-      event: "downloadFile",
-      msg: {
-        "ip": ip,
-        "path": path.isNotEmpty? path : active_desktops[index]['path'].toString(),
-        "deviceId": deviceId,
-        "index": index,
-      },
-      skipWaiting: true,
-    );
   }
 
   void emitSocketEvent({
@@ -955,190 +1102,37 @@ class AppCubit extends Cubit<States> {
       });
       if (skipWaiting == false && sendR) {
         sendR = false;
-        emit(updateSocketEmitState());
+        emit(UpdateSocketEmitState());
       }
     }
   }
 
   void updateSocketWaitingState() {
     sendR = true;
-    emit(updateSocketEmitState());
+    emit(UpdateSocketEmitState());
   }
 
-  Future<void> getConfigurations() async {
-    final response = await http.get(
-      Uri.parse('$serverUrl/confegration'),
+  void pasteFile({ip, index, path=""}){
+    showToast(
+        waitingMsg: true,
+        message: "Waiting for paste"
     );
 
-    if (response.statusCode == 200) {
-      configuration = json.decode(response.body)["configuration"];
-      print("\n\n\n ${configuration} \n\n\n\n");
-    } else {
-      delay(sec: 1);
-      getConfigurations();
-    }
-  }
-
-  Future<void> activateServer() async {
-    final response = await http.get(
-      Uri.parse('$serverUrl/welcome'),
-      // Uri.parse('http://localhost:5000/welcome'),
+    emitSocketEvent(
+      ip: ip,
+      event: "downloadFile",
+      msg: {
+        "ip": ip,
+        "path": path.isNotEmpty? path : active_desktops[index]['path'].toString(),
+        "deviceId": deviceId,
+        "index": index,
+      },
+      skipWaiting: true,
     );
-
-    if (response.statusCode == 200) {
-      var ms = json.decode(response.body);
-      print("\n\n\n ${ms} \n\n\n\n");
-    } else {
-      print("Trying to activate server ....");
-      delay(sec: 2);
-      activateServer();
-    }
   }
+  // End Socket Region
 
 
-
-
-  Future<String> pickDirectory() async {
-    String? selectedDirectory = await FilePicker.platform.getDirectoryPath();
-    selectedDirectory ??= "";
-    return selectedDirectory;
-  }
-
-  Future<void> downloadFile(String directoryPath) async {
-    // String directoryPath = "storage/emulated/0/Download/TestDesktop";
-    // String directoryPath = await pickDirectory();
-    // if(directoryPath.startsWith("/")){
-    //   directoryPath = directoryPath.replaceFirst(RegExp("/"), "");
-    //   print("\n\n\n Path: $directoryPath \n\n\n\n");
-    // }
-    print("\n\n\n Path: $directoryPath \n\n\n\n");
-    var time = DateTime.now().microsecondsSinceEpoch;
-
-    final response = await http.get(
-      Uri.parse('$serverUrl/media/view/$deviceId'),
-    );
-
-    if (response.statusCode == 200) {
-      var res = json.decode(response.body);
-      print("\n\n\n ${res} \n\n\n\n");
-      res = res["file"];
-      directoryPath = "$directoryPath/${res["file_name"]}__$time";
-      // directoryPath = "$directoryPath/${res["file_name"]}";
-      var file = File(directoryPath);
-
-
-      var fileResponse = await http.get(
-        Uri.parse('$serverUrl/${res["secure_url"]}'),
-      );
-
-      if(fileResponse.statusCode == 200){
-        await file.writeAsBytes(fileResponse.bodyBytes);
-        showToast(flag: true, message: "File downloaded successfully");
-        // OpenFile.open(directoryPath);
-      } else{
-        showToast(flag: false, message: "Failed download file");
-      }
-
-    } else {
-      showToast(flag: false, message: "Failed download file");
-    }
-  }
-
-
-
-
-
-  Future<List<dynamic>> getNewIps(macList) async {
-    final headers = {'Content-Type': 'application/json'};
-    String jsonData = jsonEncode({
-      "mac": macList,
-    });
-    final response = await http.post(
-      Uri.parse('$serverUrl/desktop/information/$deviceId'),
-      headers: headers,
-      body: jsonData
-    );
-
-    if (response.statusCode == 200) {
-      var ready_devices = json.decode(response.body)["ready_devices"];
-      print("${ready_devices} \n\n\n\n");
-
-      return ready_devices;
-    } else {
-      delay(sec: 1);
-      return getNewIps(macList);
-      // return throw Error();
-    }
-  }
-
-
-  Future<void> addDeviceToServer() async {
-    final headers = {'Content-Type': 'application/json'};
-    String jsonData = jsonEncode({
-      "name": deviceName,
-      "model": deviceModel,
-      "version_number": version_number,
-    });
-    final response = await http.post(
-      Uri.parse('$serverUrl/mobile'),
-      headers: headers,
-      body: jsonData
-    );
-
-    if (response.statusCode == 200 || response.statusCode == 201) {
-      deviceId = json.decode(response.body)["mobile"]["_id"];
-      savedValues.setString("deviceId", deviceId);
-      print("device Id: ${deviceId} \n\n\n\n");
-
-    } else {
-      delay(sec: 1);
-      addDeviceToServer();
-    }
-  }
-
-  Future<String> createConnectionOnServer(desktop_mac) async {
-    final headers = {'Content-Type': 'application/json'};
-    String jsonData = jsonEncode({
-      "desktop_mac": desktop_mac,
-      "mobile_id": deviceId,
-    });
-    final response = await http.post(
-        Uri.parse('$serverUrl/connection'),
-        headers: headers,
-        body: jsonData
-    );
-
-    if (response.statusCode == 200 || response.statusCode == 201) {
-      var res = json.decode(response.body);
-      print("Connection Respose: ${res} \n\n\n\n");
-      return res["connection"]["_id"];
-
-    } else {
-      delay(sec: 1);
-      return createConnectionOnServer(desktop_mac);
-    }
-  }
-
-  Future<void> deleteConnection(connectionId) async {
-    final response = await http.delete(
-      Uri.parse('$serverUrl/connection/$connectionId'),
-    );
-
-    if (response.statusCode == 200) {
-      var msg = json.decode(response.body);
-      print("\n\n\n ${msg} \n\n\n\n");
-    }else {
-      var msg = json.decode(response.body);
-      print("\n\n\n ${msg} \n\n\n\n");
-    }
-
-  }
-
-  bool laoding = true;
-  void stopLoading(){
-    laoding=false;
-    emit(stopLoadingState());
-  }
 
 
 }

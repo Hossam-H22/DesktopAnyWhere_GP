@@ -117,20 +117,17 @@ class _LiveView5State extends State<LiveView> {
               child: _remoteRenderer.srcObject != null
                   ? GestureDetector(
                       onTapDown: (position) {
-                        // print("\n\n\n\n ${position.globalPosition} \n\n\n\n");
+                        // print("Position: ${position.globalPosition} \n\n\n");
                       },
                       onPanStart: (details) {
                         previousOffset = details.globalPosition;
                       },
                       onPanUpdate: (value) {
-                        // print(value.globalPosition);
 
                         Size? size = _key.currentContext
                             ?.findRenderObject()
                             ?.paintBounds
                             .size;
-
-                        // var factor = rotate? sizeFactor : 1;
 
                         // Calculate the difference between current and previous positions
                         double deltaX =
@@ -142,26 +139,16 @@ class _LiveView5State extends State<LiveView> {
                         previousOffset = value.globalPosition;
 
                         if (rotate) {
-                          // coordinate["Y"] = -1*value.globalPosition.dx+ (size!.width) -45;
                           coordinate["Y"] = -1 * deltaX;
-                          // coordinate["X"] = value.globalPosition.dy-90;
                           coordinate["X"] = deltaY;
-                          // coordinate["height"] = size!.width-90;
                           coordinate["height"] = size!.width;
-                          // coordinate["width"] = size!.height-90;
                           coordinate["width"] = size!.height;
                         } else {
-                          // coordinate["X"] = value.globalPosition.dx-35;
                           coordinate["X"] = deltaX;
-                          // coordinate["Y"] = value.globalPosition.dy-(size!.height*0.65);
                           coordinate["Y"] = deltaY;
-                          // coordinate["width"] = size!.width-70;
                           coordinate["width"] = size!.width;
-                          // coordinate["height"] = size!.height-(size!.height*0.5);
                           coordinate["height"] = size!.height;
                         }
-
-                        // print("\n\n\n\n ${coordinate} \n\n\n\n\n\n");
 
                         cubit?.emitSocketEvent(
                           ip: widget.ip,
@@ -277,7 +264,7 @@ class _LiveView5State extends State<LiveView> {
                             if(cubit?.active_desktops[widget.index]["isRecording"]) IconButton(
                                 onPressed: () async {
                                   await cubit?.stopRecording();
-                                  print("Audio Canceled \n\n\n\n\n\n\n");
+                                  print("Audio Canceled \n\n\n");
                                   cubit?.toggleRecordState(index: widget.index, state: false);
                                 },
                                 icon: Icon(

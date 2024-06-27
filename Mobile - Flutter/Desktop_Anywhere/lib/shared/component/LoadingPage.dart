@@ -1,7 +1,6 @@
-
-
 import 'package:flutter/material.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
+
 
 class LoadingPage extends StatelessWidget {
   Color? backgroundColor;
@@ -23,9 +22,6 @@ class LoadingPage extends StatelessWidget {
           color: circleColor ?? Colors.white,
           size: 75,
         ),
-        // child: CircularProgressIndicator(
-        //   color: circleColor ?? Colors.white,
-        // ),
       ),
     );
   }

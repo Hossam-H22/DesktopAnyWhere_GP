@@ -9,6 +9,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../cubit/cubit.dart';
 import '../cubit/states.dart';
 
+
 class ActiveDevicesCard extends StatelessWidget {
   // final String deviceName;
   // final int deviceid;
@@ -26,9 +27,7 @@ class ActiveDevicesCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<AppCubit, States>(
-      listener: (context,state) {
-        print(state);
-      },
+      listener: (context,state) {},
       builder: (context, state) {
         AppCubit cubit = AppCubit.get(context);
 

@@ -27,20 +27,14 @@ class Keyboard extends StatelessWidget {
           child: TextButton(
             onPressed: onPressed ?? () {
               if (!cubit.isArabic) {
-                // cubit.sendMessageKeyboard(text, ip, 8888);
                 cubit.emitSocketEvent(
                     ip: ip,
                     event: "keyboard",
                     msg: text,
                     skipWaiting: true,
                 );
-                print(text);
               }
               else {
-                // (cubit.isUppercase && cubit.isArabic) ? cubit
-                //     .sendMessageKeyboard(text.toUpperCase(), ip, 8888) : cubit
-                //     .sendMessageKeyboard(text.toLowerCase(), ip, 8888);
-
                 cubit.emitSocketEvent(
                   ip: ip,
                   event: "keyboard",

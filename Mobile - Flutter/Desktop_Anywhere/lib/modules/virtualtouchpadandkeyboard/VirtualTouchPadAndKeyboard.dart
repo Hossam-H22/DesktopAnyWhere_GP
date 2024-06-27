@@ -7,6 +7,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../shared/cubit/cubit.dart';
 import '../../shared/cubit/states.dart';
+
+
 class VirtualTouchpadAndKeyboard extends StatelessWidget {
 
   final String ip;
@@ -98,7 +100,6 @@ class VirtualTouchpadAndKeyboard extends StatelessWidget {
                   Expanded(
                     child: InkWell(
                       onDoubleTap: (){
-                        // cubit.sendMessageKeyboard('double-click', ip, 8888);
                         cubit.emitSocketEvent(
                           ip: ip,
                           event: "mouse_click",
@@ -107,7 +108,6 @@ class VirtualTouchpadAndKeyboard extends StatelessWidget {
                         );
                       },
                       onTap: (){
-                        // cubit.sendMessageKeyboard('left-click', ip, 8888);
                         cubit.emitSocketEvent(
                           ip: ip,
                           event: "mouse_click",
@@ -131,7 +131,6 @@ class VirtualTouchpadAndKeyboard extends StatelessWidget {
                   Expanded(
                     child: InkWell(
                       onTap: (){
-                        // cubit.sendMessageKeyboard('right-click', ip, 8888);
                         cubit.emitSocketEvent(
                           ip: ip,
                           event: "mouse_click",

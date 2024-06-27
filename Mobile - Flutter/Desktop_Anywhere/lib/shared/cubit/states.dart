@@ -2,8 +2,6 @@ abstract class States {}
 
 class InitialState extends States{}
 
-// class ChangeBottomNavBarState extends States {}
-//
 class CreateDatabaseState extends States {}
 
 class GetDatabaseLoadingState extends States {}
@@ -40,31 +38,45 @@ class PushPageState extends States{}
 
 class PopPageState extends States{}
 
-
-// class ChangeBottomSheetState extends States {States}
-
-// ----------------------------------------------------------------
-
 class AddActiveDesktopList extends States{}
-class DeleteActiveDesktopList extends States{}
-class changeDesktopViewMode extends States{}
-class updateImageShareScreen extends States{}
-class getShareScreenConfiguration extends States{}
-class updateRoomID extends States{}
-class updateSizeFactorView extends States{}
-class updateRotateStatues extends States{}
-class updateSocketEmitState extends States{}
-class updateTemporaryData extends States{}
 
-class stopLoadingState extends States{}
-class updateActiveDeviceLoadingStatus extends States{}
+class DeleteActiveDesktopList extends States{}
+
+class ChangeDesktopViewMode extends States{}
+
+class UpdateImageShareScreen extends States{}
+
+// class GetShareScreenConfiguration extends States{}
+
+class UpdateRoomIDState extends States{}
+
+class UpdateSizeFactorView extends States{}
+
+class UpdateRotateStatues extends States{}
+
+class UpdateSocketEmitState extends States{}
+
+class UpdateTemporaryData extends States{}
+
+class StopLoadingState extends States{}
+
+class UpdateActiveDeviceLoadingStatus extends States{}
+
 class TogglePairLoadingState extends States{}
+
 class ToggleConnectDeviceLoadingState extends States{}
+
 class ToggleRecordLoadingState extends States{}
+
 class UpdateDeviceNameState extends States{}
+
 class SharedPreferencesState extends States{}
+
 class ToggleCopyBoolState extends States{}
+
 class ToggleStartAppState extends States{}
+
+
 
 
 

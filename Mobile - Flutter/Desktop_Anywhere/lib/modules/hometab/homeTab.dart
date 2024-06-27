@@ -1,4 +1,3 @@
-
 import 'package:desktop_anywhere/shared/component/EmptyPage.dart';
 import 'package:desktop_anywhere/shared/component/ErrorPage.dart';
 import 'package:desktop_anywhere/shared/component/LoadingPage.dart';
@@ -11,15 +10,14 @@ import '../../shared/cubit/states.dart';
 import '../contactus/ContactUs.dart';
 import '../paringpage/ParingPage.dart';
 
+
 class HomeTab extends StatelessWidget {
   HomeTab({super.key});
 
   getData() async {
     if(cubit!.laoding){
-      print("loading.... \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
+      // print("loading.... \n\n\n");
       await cubit?.autoConnection();
-      // cubit?.laoding = false;
-      // cubit?.stopLoading();
     }
 
     return [];
@@ -98,7 +96,7 @@ class HomeTab extends StatelessWidget {
                           return RefreshIndicator(
                             color: Colors.black,
                             onRefresh: () async{
-                              print("onRefresh.... \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
+                              // print("onRefresh.... \n\n\n");
                               // await cubit?.delay(sec: 2);
                               await cubit?.autoConnection();
                             },

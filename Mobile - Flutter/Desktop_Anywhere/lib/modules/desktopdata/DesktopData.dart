@@ -103,7 +103,7 @@ class DesktopData extends StatelessWidget {
                             index,
                             newValue,
                           );
-                          print("$newValue \n\n\n\n\n");
+                          // print("$newValue \n\n\n\n\n");
                         },
                         items: [
                           DropdownMenuItem(value: "Partitions", child: barListItem("Partitions", Icons.folder_copy),),
@@ -147,7 +147,7 @@ class DesktopData extends StatelessWidget {
                             child: FloatingActionButton(
                               onPressed: () async {
                                 await cubit.stopRecording();
-                                print("Audio Canceled \n\n\n\n\n\n\n");
+                                print("Audio Canceled \n\n\n");
                                 cubit.toggleRecordState(index: index, state: false);
                               },
                               backgroundColor: Colors.black,
@@ -169,10 +169,9 @@ class DesktopData extends StatelessWidget {
                               await cubit.stopRecording();
                               File audioFile = File(cubit.filePath);
                               List<int> audioBytes = audioFile.readAsBytesSync();
-                              print("Audio Finished \n\n\n\n\n\n\n");
+                              // print("Audio Finished \n\n\n");
                               cubit.toggleRecordLoadingState(index: index, state: true);
                               cubit.toggleRecordState(index: index, state: false);
-
 
                               cubit.emitSocketEvent(
                                 ip: ip,
@@ -182,8 +181,6 @@ class DesktopData extends StatelessWidget {
                                 msg_error: "Voice not sent",
                                 skipWaiting: true,
                               );
-
-
                             }
                           },
                           backgroundColor: Colors.black,

@@ -62,16 +62,12 @@ class partitionPage extends StatelessWidget {
               color: Colors.white,
             ),
             onPressed: () async {
-              // print(this.componentName);
-              // print('==================');
-
               cubit.setpath(
                   foldername: componentName,
                   flag: 1,
                   update: 0,
                   index: index
               );
-
               cubit.updateInputData(context: tabContext);
               cubit.updateActiveDeviceLoading(index: index);
               cubit.emitSocketEvent(

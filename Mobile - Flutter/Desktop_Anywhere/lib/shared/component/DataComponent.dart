@@ -98,7 +98,7 @@ class _GenericComponentState extends State<GenericComponent> {
                     color: Colors.white,
                   ),
                   onPressed: () {
-                    print(widget.componentName);
+                    // print(widget.componentName);
                     // // Customize the behavior based on component type
                     // if (widget.componentType == ComponentType.Folder) {
                     //   // Handle folder click
