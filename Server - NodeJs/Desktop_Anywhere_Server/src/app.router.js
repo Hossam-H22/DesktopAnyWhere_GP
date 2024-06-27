@@ -93,7 +93,6 @@ const initApp = (app, express) => {
     });
 
 
-
     // Error handling middleware
     app.use(globalErrorHandling);
 

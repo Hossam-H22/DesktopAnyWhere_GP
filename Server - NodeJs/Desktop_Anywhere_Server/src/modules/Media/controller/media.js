@@ -29,7 +29,6 @@ export const getOne = asyncHandler(async (req, res, next) => {
 })
 
 
-
 export const add = asyncHandler(async (req, res, next) => {
     const mobile_Id = req.body.mobile_Id;
     var media = await mediaModel.find({ createdBy: mobile_Id });

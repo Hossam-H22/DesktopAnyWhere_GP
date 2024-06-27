@@ -30,8 +30,6 @@ const initSocket = (server) => {
     });
 
     io.on("connection", (socket) => {
-        // console.log(socket.id);
-
 
         // socket.emit("event", {
         //     "ip": "192.168.1.9", // 
@@ -46,7 +44,6 @@ const initSocket = (server) => {
         //         "":"",
         //     },
         // })
-
 
         socket.on("event", (data) => {
             const { event, message } = data;
@@ -78,8 +75,6 @@ const initSocket = (server) => {
             console.log("addDevice");
             const newDevices = devices.filter(device => {
                 return !(device['ip'] == data['ip'] && device['type'] == data['type']);
-                // return !( device['ip'] == data['ip'] && device['type'] == data['type'] && (data['type'] == "desktop" || data['type'] == "web") );
-                // return !(device['id'] == socket.id);
             });
             devices = newDevices;
             devices.push({
