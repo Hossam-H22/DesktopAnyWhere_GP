@@ -189,17 +189,14 @@ class _MyHomePageState extends State<MyHomePage> {
     setState(() {
       loading = true;
     });
-
     final response = await http.get(
       Uri.parse('$serverLink/connection/desktop/$macAddress'),
     );
-
 
     if (response.statusCode == 200) {
       connections = json.decode(response.body)["mobiles"];
       print("\n\n\n ${connections} \n\n\n\n");
     }
-
     setState(() {
       loading = false;
     });

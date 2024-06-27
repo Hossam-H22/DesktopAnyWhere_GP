@@ -142,25 +142,18 @@ class Signaling {
     return roomId;
   }
 
-  Future<void> joinRoom(
-      String roomId,
-      RTCVideoRenderer remoteVideo,
-      Map<String, dynamic> configuration,
-      ) async {
+  Future<void> joinRoom(String roomId, RTCVideoRenderer remoteVideo,
+      Map<String, dynamic> configuration,) async {
     this.roomId = roomId;
     FirebaseFirestore db = FirebaseFirestore.instance;
     print(roomId);
     DocumentReference roomRef = db.collection('rooms').doc('$roomId');
     var roomSnapshot = await roomRef.get();
     print('Got room ${roomSnapshot.exists}');
-
     if (roomSnapshot.exists) {
       print('Create PeerConnection with configuration: $configuration');
       peerConnection = await createPeerConnection(configuration);
-
       registerPeerConnectionListeners();
-
-
       localStream?.getTracks().forEach((track) {
         peerConnection?.addTrack(track, localStream!);
       });
@@ -174,8 +167,7 @@ class Signaling {
         }
         print('onIceCandidate: ${candidate.toMap()}');
         calleeCandidatesCollection.add(candidate.toMap());
-      };
-      // Code for collecting ICE candidate above
+      }; // Code for collecting ICE candidate above
 
       peerConnection?.onTrack = (RTCTrackEvent event) {
         print('Got remote track: ${event.streams[0]}');
@@ -194,13 +186,10 @@ class Signaling {
       );
       var answer = await peerConnection!.createAnswer();
       print('Created Answer $answer');
-
       await peerConnection!.setLocalDescription(answer);
-
       Map<String, dynamic> roomWithAnswer = {
         'answer': {'type': answer.type, 'sdp': answer.sdp}
       };
-
       await roomRef.update(roomWithAnswer);
       // Finished creating SDP answer
 
