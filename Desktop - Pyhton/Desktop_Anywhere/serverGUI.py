@@ -657,7 +657,7 @@ class Models:
         #     print(f"Word: {word}, Labels: {', '.join(labels)}")
         return entities
 
-    def run(self, save_path):
+    def run(self, fun_done_voice_processing):
         # print(f'voice_path : {voice_path}')
         # # Handle whisper ##
         # text = self.speechToText(voice_path)
@@ -674,6 +674,8 @@ class Models:
         # Assign the first line to className
         className = lines[0].strip()
         print(f'Class Name : {className}')
+
+        fun_done_voice_processing()
 
         # Parse the remaining lines into the entities dictionary
         for line in lines[1:]:
@@ -1126,11 +1128,9 @@ class SupportScoketFunctions:
         return mac_address
 
     def transfer_partition(self, target):
-        # target = request.args.get('target')
         colon_index = target.find(':')
 
-        # Check if the colon is found
-        if colon_index != -1:
+        if colon_index != -1: # Check if the colon is found
             # Create a new string with a backslash inserted after the colon
             target = target[:colon_index + 1] + '\\' + target[colon_index + 1:]
 
@@ -1139,10 +1139,7 @@ class SupportScoketFunctions:
             for disk in psutil.disk_partitions():
                 drive = disk.device
                 partitions.append(drive)
-
-            # return jsonify(partitions)
             return partitions
-
         else:
             directories = []
             files = []
@@ -1230,7 +1227,6 @@ class SupportScoketFunctions:
             else:
                 os.remove(path)
                 print(f"File '{path}' deleted successfully.")
-
             return True
         else:
             print(f"File or Folder '{path}' does not exist.")
@@ -1452,21 +1448,6 @@ class Socket:
                 pyautogui.hotkey('ctrl', 'v')
 
         @sio.event
-        def getPartition(data):
-            print(f"getPartition: ", data["target"])
-            partitions = self.support.transfer_partition(data["target"])
-            data["partitions"] = partitions
-            sio.emit("event", {
-                "ip": ip,  # IP
-                "type": "desktop",  # mobile or desktop or web
-                "target_type": "mobile",  # mobile or desktop or web
-                "event": "partition",  # target event
-                "message": data,
-                "eventError": "error",  # error event if target not found
-                "messageError": "",
-            })
-
-        @sio.event
         def mouse_click(data):
             print('mouse_click: ', data)
             # x, y = pyautogui.position()
@@ -1513,6 +1494,21 @@ class Socket:
 
                 # Move the mouse cursor to the new position
                 mouse.position = (new_x, new_y)
+
+        @sio.event
+        def getPartition(data):
+            print(f"getPartition: ", data["target"])
+            partitions = self.support.transfer_partition(data["target"])
+            data["partitions"] = partitions
+            sio.emit("event", {
+                "ip": ip,  # IP
+                "type": "desktop",  # mobile or desktop or web
+                "target_type": "mobile",  # mobile or desktop or web
+                "event": "partition",  # target event
+                "message": data,
+                "eventError": "error",  # error event if target not found
+                "messageError": "",
+            })
 
         @sio.event
         def getPassword(data):
@@ -1565,10 +1561,6 @@ class Socket:
                 "target_type": "mobile",
                 "event": "password",
                 "message": msg,
-                # "message": {
-                #     "message": result,
-                #     "valid": valid
-                # },
                 "eventError": "error",
                 "messageError": "",
             })
@@ -1607,8 +1599,6 @@ class Socket:
                 f.write(bytearray(voice_file))
             print(f"Audio saved to: {save_path}")
 
-            msg = "Command Done"
-            flag = True
             sio.emit("event", {
                 "ip": ip,  # IP
                 "type": "desktop",  # mobile or desktop or web
@@ -1616,14 +1606,29 @@ class Socket:
                 "event": "voiceArrived",  # target event
                 "message": {
                     "ip": ip,
-                    "message": msg,
-                    "flag": flag,
+                    "message": "Waiting for processing voice ..",
+                    "flag": True,
+                    "waitingMsg": True,
                 },
                 "eventError": "error",  # error event if target not found
                 "messageError": "",
             })
 
-            self.model.run(save_path)
+            def fun_done_voice_processing():
+                sio.emit("event", {
+                    "ip": ip,  # IP
+                    "type": "desktop",  # mobile or desktop or web
+                    "target_type": "mobile",  # mobile or desktop or web
+                    "event": "voiceArrived",  # target event
+                    "message": {
+                        "ip": ip,
+                        "message": "Command processing done",
+                        "flag": True,
+                    },
+                    "eventError": "error",  # error event if target not found
+                    "messageError": "",
+                })
+            self.model.run(fun_done_voice_processing)
 
         @sio.event
         def deleteFileOrFolder(data):
