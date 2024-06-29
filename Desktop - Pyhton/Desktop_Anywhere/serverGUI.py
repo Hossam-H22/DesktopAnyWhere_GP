@@ -1,45 +1,39 @@
-import random
-import subprocess
+import re
+import os
 import uuid
-import schedule
-import pyperclip
-import win32api
-from PyQt5 import QtCore, QtGui, QtWidgets
-import sys
-import multiprocessing
-from multiprocessing import Event
 import time
 import psutil
-import pygetwindow as gw
-import os
-import pyautogui
-import socketio
-import socket
+import random
+import pygame
 import ctypes
-import pyperclip
+import socket
+import socketio
+import schedule
+import win32api
 import requests
+import pyautogui
+import pyperclip
+import subprocess
+import tkinter as tk
+import multiprocessing
+from threading import Thread
+from playsound import playsound
+from collections import defaultdict
+from datetime import datetime, timedelta
 from pynput.mouse import Controller, Button
+from transformers import pipeline
 from transformers import AutoModelForSequenceClassification, AutoTokenizer
 from transformers import pipeline
-from collections import defaultdict
 from transformers import BertTokenizerFast
 from transformers import AutoModelForTokenClassification
-import re
-from datetime import datetime, timedelta
-from datetime import datetime
-import os
-import win32com.client
-import subprocess
-import time
-import psutil
 from transformers import WhisperForConditionalGeneration, WhisperTokenizer
-import torch
-from transformers import pipeline
 from transformers import WhisperFeatureExtractor
-import pygame
-from playsound import playsound
-from threading import Thread
-import tkinter as tk
+import pygetwindow as gw
+import torch
+import sys
+
+
+
 
 
 def convert_seconds(number):
@@ -359,74 +353,6 @@ class SupportModelFunctions:
             subprocess.call(['shutdown', '/s'])
         except ValueError:
             print("Invalid time format. Please try again.")
-
-    def convert_arabic_time_to_english(self, arabic_time):
-        # Define a dictionary to convert Arabic numerals to English
-        arabic_to_english = {
-            '٠': '0',
-            '١': '1',
-            '٢': '2',
-            '٣': '3',
-            '٤': '4',
-            '٥': '5',
-            '٦': '6',
-            '٧': '7',
-            '٨': '8',
-            '٩': '9'
-        }
-
-        # Convert Arabic numerals to English
-        arabic_time = ''.join(arabic_to_english.get(char, char) for char in arabic_time)
-        # Define patterns to match different formats of Arabic time expressions
-        patterns = [
-            (r'ساعتين إلا ربع', '1 hours and 45 minutes'),
-            (r'ساعتين إلا ثلث', '1 hours and 40 minutes'),
-            (r'ساعة إلا (\d+)', lambda match: f'00:{(60 - int(match.group(1)))}'),
-            (r'الساعة (\d+):(\d+)', lambda match: f'{match.group(1)}:{match.group(2)}:00'),
-            (r'الساعة (\d+)', lambda match: f'{match.group(1)}:00'),
-            (r'ساعة وربع', '1 hour and 15 minutes'),
-            (r'ساعة ونصف', '1 hour and 30 minutes'),
-            (r'ساعة وثلث', '1 hour and 20 minutes'),
-            (r'ساعة', '1 hour'),
-            (r'إلا(\d+)', lambda match: f'{(60 - int(match.group(1)))} mintues'),
-            (r'(\d+)ساعة و', lambda match: f'1:{match.group(1)}'),
-            (r' و (\d+) دقيقة', lambda match: f'{match.group(1)} minutes'),
-            (r'(\d+) ساعة و (\d+) دقيقه', lambda match: f'{match.group(1)} hours and {match.group(2)} minutes'),
-            (r'(\d+) ساعة و (\d+) دقيقة', lambda match: f'{match.group(1)} hours and {match.group(2)} minutes'),
-            (r'(\d+) ساعات ونصف', lambda match: f'{match.group(1)} hours and 30 minutes'),
-            (r'(\d+) ساعات وثلث', lambda match: f'{match.group(1)} hours and 20 minutes'),
-            (r'(\d+) ساعات وربع', lambda match: f'{match.group(1)} hours and 15 minutes'),
-            (r'(\d+) ساعة', lambda match: f'{match.group(1)} hours'),
-            (r'(\d+) دقيقة', lambda match: f'{match.group(1)} minutes'),
-            (r'(\d+) ساعة', lambda match: f'{match.group(1)} hours'),
-            (r'(\d+) دقيقه', lambda match: f'{match.group(1)} minutes'),
-            (r'(\d+) ساعة و (\d+) دقيقة', lambda match: f'{match.group(1)} hours and {match.group(2)} minutes'),
-            (r'(\d+) ساعة', lambda match: f'{match.group(1)} hours'),
-            (r'(\d+)\s*ساعات', lambda match: f'{match.group(1)} hours'),
-            (r'ساعتين', '2 hours'),
-            (r'ساعتين ونصف', '2 hours and 30 minutes'),
-            (r'ساعتين وثلث', '2 hours and 20 minutes'),
-            (r'ساعتين وربع', '2 hours and 15 minutes'),
-            (r'(\d+) دقيقة', lambda match: f'{match.group(1)} minutes'),
-            (r'(\d+) دقيقه', lambda match: f'{match.group(1)} minutes'),
-            (r'(\d+) دقائق', lambda match: f'{match.group(1)} minutes'),
-            (r'نصف', '30 minutes'),
-            (r'ربع', '15 minutes'),
-            (r'ثلث', '20 minutes'),
-            (r'و', 'and'),
-        ]
-
-        # Iterate through patterns and apply substitution
-        for pattern, repl in patterns:
-            if callable(repl):
-                arabic_time = re.sub(pattern, repl, arabic_time)
-            else:
-                arabic_time = re.sub(pattern, repl, arabic_time)
-
-        # Convert Arabic numerals to English
-        arabic_time = ''.join(arabic_to_english.get(char, char) for char in arabic_time)
-
-        return arabic_time
 
     def restart_pc_at_specific_time(self, hour, minute):
         # Schedule restart task
@@ -1801,9 +1727,3 @@ if __name__ == '__main__':
 
     socket_process.join()
     desktop_process.join()
-
-    # get_all_paths()
-    # model = Models()
-    #
-    # # model.run('saved_voices_socket\\received_audio.wav')
-    # model.get_file_folder('welcome back pro')
