@@ -1,4 +1,4 @@
-![image](https://github.com/user-attachments/assets/1ade4cae-1529-4a05-9436-09344faecc12)<!-- # Desktop AnyWhere -->
+<!-- # Desktop AnyWhere -->
 
 
 ![logo-no-background](https://github.com/user-attachments/assets/94c56387-f57c-4b1d-bc19-f1f098b61207)
