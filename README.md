@@ -98,14 +98,14 @@ It is a software which developed as a comprehensive and integrated system consis
 
 <a id="Dataset_Description"></a>
 
-## Dataset Description  - [Dataset](Dataset/Full-Balanced version - Numeric one.xlsx)
+## Dataset Description  - [Dataset](Dataset/Full-Balanced-version-Numeric.xlsx)
 #### Dataset Commands:
-- Search: The user can serach for a file/folder on his desktop.
-- Set : The user can set the alarm or the stopwatch on his desktop device.
-- Add Note : The user can add note on his desktop device.
-- Close : The user can schedule shuting down the desktop or closing specific running app.
-- Restart : The user can schedule restarting the desktop.
-- Sleep : The user can schedule putting the desktop on sleep mode.
+- Search: The user can search for a file/folder on his desktop.
+- Set: The user can set the alarm or the stopwatch on his desktop.
+- Add Note: The user can add notes on his desktop device.
+- Close: The user can schedule shutting down the desktop or closing specific running apps.
+- Restart: The user can schedule restarting the desktop.
+- Sleep: The user can schedule putting the desktop on sleep mode.
 
 #### Dataset generation and evolution:
 - number of created records = **1932**
