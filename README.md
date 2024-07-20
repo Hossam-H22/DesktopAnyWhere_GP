@@ -79,8 +79,17 @@ It is a software which developed as a comprehensive and integrated system consis
 
 ## Project Structure & Architecture
 
+[Mobile App]: https://github.com/Hossam-H22/DesktopAnyWhere_GP/tree/master/Mobile%20Application/Desktop_Anywhere
+[Desktop App]: https://github.com/Hossam-H22/DesktopAnyWhere_GP/tree/master/Desktop%20Application
+[Server]: https://github.com/Hossam-H22/Desktop_Anywhere_Server
+
+
+|     [Server]     |   [Desktop App]   |   [Mobile App]   |
+|------------------|-------------------|------------------|
 
 ![Picture1](https://github.com/user-attachments/assets/07441087-3af1-4efe-8385-83d09a936634)
+
+
 
 
 
