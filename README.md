@@ -40,11 +40,11 @@ It is a software which developed as a comprehensive and integrated system consis
 <br>
 
 ## Features
-- **Autoconnection:** Automatically connects to paired devices without authentication after the initial pairing.
-- **Multiple Desktops Access:** Supports connecting to and controlling multiple desktops simultaneously from the mobile app.
 - **File Management:** Provides access to desktop partitions from the mobile app, allowing users to copy files between desktops, save files to the mobile device, delete, and create folders.
 - **Live Screen Sharing:** Allows users to view and control their desktop screen in real time through the mobile app.
 - **Virtual Touchpad and keyboard:** Enables users to use their mobile device as a touchpad and keyboard for their desktop.
+- **Autoconnection:** Automatically connects to paired devices without authentication after the initial pairing.
+- **Multiple Desktops Access:** Supports connecting to and controlling multiple desktops simultaneously from the mobile app.
 - **Arabic Voice commands:** Implements specific voice commands in Arabic for functionalities such as:
     - **Search:** Search for files or folders on the desktop.
     - **Set:** Set an alarm or stopwatch on the desktop.
