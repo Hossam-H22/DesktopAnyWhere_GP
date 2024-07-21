@@ -8,6 +8,9 @@
 Desktop Anywhere is a unified software system with mobile and desktop applications that allows seamless remote control of personal computers via touchpad, keyboard, and voice commands in Arabic, with automatic device pairing and high accuracy.
 
 
+
+
+
 <br>
 
 
@@ -16,6 +19,7 @@ Desktop Anywhere is a unified software system with mobile and desktop applicatio
 
 - [ Introduction. ](#Introduction)
 - [ Features. ](#Features)
+- [ Demo Video. ](#Demo_Video)
 - [ Technologies Used & Dependencies. ](#Technologies_Used)
 - [ System Architecture. ](#Project_Structure)
 - [ Dataset Description. ](#Dataset_Description)
@@ -52,6 +56,25 @@ It is a software which developed as a comprehensive and integrated system consis
     - **Close:** Schedule shutdowns or close specific running applications.
     - **Restart:** Schedule desktop restarts.
     - **Sleep:** Schedule putting the desktop in sleep mode.
+
+
+
+
+
+
+
+
+<a id="Demo_Video"></a>
+
+<br>
+
+## Demo Video
+
+
+https://github.com/user-attachments/assets/f3caf58c-18fc-4758-92b1-3cfbf1570fd9
+
+
+
 
 
 
