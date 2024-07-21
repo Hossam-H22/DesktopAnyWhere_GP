@@ -40,12 +40,19 @@ It is a software which developed as a comprehensive and integrated system consis
 <br>
 
 ## Features
-- **Autoconnection:** Auto connection without any authentication, with the paired devices.
-- **Multiple Desktops Access:** Enable users to access and control multiple personal desktop computers.
-- **Real time view:** Show screen of desktop on mobile in real-time
-- **Remote control:** Access and control personal desktop computer remotely from mobile.
-- **Virtual Touchpad and keyboard:** Execute tasks through virtual touchpad and keyboard.
-- **Voice commands:** Utilize voice commands in Arabic mainly the search and schedule tasks.
+- **Autoconnection:** Automatically connects to paired devices without authentication after the initial pairing.
+- **Multiple Desktops Access:** Supports connecting to and controlling multiple desktops simultaneously from the mobile app.
+- **File Management:** Provides access to desktop partitions from the mobile app, allowing users to copy files between desktops, save files to the mobile device, delete, and create folders.
+- **Live Screen Sharing:** Allows users to view and control their desktop screen in real time through the mobile app.
+- **Virtual Touchpad and keyboard:** Enables users to use their mobile device as a touchpad and keyboard for their desktop.
+- **Arabic Voice commands:** Implements specific voice commands in Arabic for functionalities such as:
+    - **Search:** Search for files or folders on the desktop.
+    - **Set:** Set an alarm or stopwatch on the desktop.
+    - **Add Note:** Add notes on the desktop.
+    - **Close:** Schedule shutdowns or close specific running applications.
+    - **Restart:** Schedule desktop restarts.
+    - **Sleep:** Schedule putting the desktop in sleep mode.
+
 
 
 
