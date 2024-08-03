@@ -94,7 +94,7 @@ https://github.com/user-attachments/assets/f3caf58c-18fc-4758-92b1-3cfbf1570fd9
 - **Node.js:** A server-side JavaScript runtime used to build fast and scalable network applications.
 - **Express:** A minimal and flexible Node.js web application framework that simplifies API development.
 - **MongoDB:** A NoSQL database used for efficient and flexible data storage.
-- **Cloudinary:** A cloud-based media management platform for uploading, storing, and delivering images and other media.
+- **Multer:** A media management platform for uploading, storing, and delivering images and other media.
 - **Socket IO:** A library that enables real-time, bidirectional communication between web clients and servers.
 - **WebRTC:** Web Real-Time Communication is a technology that enables real-time audio, video, and data sharing between web browsers and mobile applications without requiring plugins or additional software.
 - **Flutter:** An open-source UI framework developed by Google for building natively compiled applications for mobile, web, and desktop from a single codebase.
